@@ -19,8 +19,7 @@ This fork's SPM package uses actual Swift 6 language mode (tools 6.0), with
 iOS/tvOS 15, macOS 12 and watchOS 9 minimums. Its calendar cache is synchronized
 and localized relative-date resources are included. Existing date APIs remain.
 
-Install `https://github.com/tomasszabo/SwiftMoment.git` from `master` after the
-Swift 6 migration PR merges (use `modernization/swift6` for review beforehand).
+Install `https://github.com/tomasszabo/SwiftMoment.git` from `master`.
 Select the `SwiftMoment` product. Run `swift test` for the date regression suite.
 
 ## Installation
@@ -42,7 +41,7 @@ let package = Package(
     name: "MyPackage",
     dependencies: [
         ...
-        .package(url: "https://github.com/akosma/SwiftMoment.git", from: "0.7.1"),
+        .package(url: "https://github.com/tomasszabo/SwiftMoment.git", branch: "master"),
     ],
     ...
 )
