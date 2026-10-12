@@ -104,6 +104,9 @@ extension Moment {
     }
 
     private func NSDateTimeAgoLocalizedStrings(_ key: String) -> String {
+        #if SWIFT_PACKAGE
+        let frameworkBundle = Bundle.module
+        #else
         // get framework bundle
         guard let bundleIdentifier = Bundle(for: MomentBundle.self).bundleIdentifier  else {
             return ""
@@ -112,6 +115,7 @@ extension Moment {
         guard let frameworkBundle = Bundle(identifier: bundleIdentifier) else {
             return ""
         }
+        #endif
 
         guard let resourcePath = frameworkBundle.resourcePath else {
             return ""

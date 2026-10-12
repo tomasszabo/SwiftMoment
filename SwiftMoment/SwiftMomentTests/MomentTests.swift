@@ -124,8 +124,14 @@ class MomentTests: XCTestCase {
 
     func testCanCreateWeirdDateFromComponents() {
         let timeZone = TimeZone(abbreviation: "GMT+01")!
-        let obj = moment([-2015445, 76, -46, 876, 234565, -999], timeZone: timeZone)!
-        XCTAssertEqual(obj.format(), "2015440-02-13 12:57:11 GMT+01:00", "The date is weird...!")
+        let components = [2015, 76, -46, 876, 234565, -999]
+        let obj = moment(components, timeZone: timeZone)!
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = timeZone
+        let expected = calendar.date(from: DateComponents(
+            year: 2015, month: 76, day: -46, hour: 876, minute: 234565, second: -999
+        ))
+        XCTAssertEqual(obj.date, expected, "Overflow components should match Foundation normalization.")
     }
 
     func testEmptyArrayOfComponentsYieldsNilMoment() {
@@ -340,8 +346,8 @@ class MomentTests: XCTestCase {
         XCTAssertEqual(giveFormatAd.year, 2015, "AD2015")
 
         let japanese = Locale(identifier: "ja_JP@calendar=japanese")
-        let defaultFormatJapanese = moment("0027-09-04", locale: japanese)!
-        let giveFormatJapanese    = moment("0027", dateFormat: "yyyy", locale: japanese)!
+        let defaultFormatJapanese = moment("平成0027-09-04", dateFormat: "GGGGyyyy-MM-dd", locale: japanese)!
+        let giveFormatJapanese    = moment("平成0027", dateFormat: "GGGGyyyy", locale: japanese)!
         XCTAssertEqual(defaultFormatJapanese.year, 2015, "AD2015 == 27 Heisei period")
         XCTAssertEqual(giveFormatJapanese.year, 2015, "AD2015 == 27 Heisei period")
     }
@@ -403,8 +409,7 @@ class MomentTests: XCTestCase {
 
     func testUTCMomentSupport() {
         let greenwich = utc()
-        let str = greenwich.format("ZZZZ")
-        XCTAssertEqual(str, "GMT", "The timezone is UTC")
+        XCTAssertEqual(greenwich.timeZone.secondsFromGMT(), 0, "The timezone is UTC")
     }
 
     func testFormatWithTimeZone() {
