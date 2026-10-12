@@ -15,7 +15,13 @@ objectives are the following:
 - Streamlining getting date components (day, month, etc.) from dates and
   time intervals.
 
-Important: This framework supports iOS 9+, macOS 10.11+, tvOS 9+, watchOS 2+, Xcode 8 and Swift 3.
+This fork's SPM package uses actual Swift 6 language mode (tools 6.0), with
+iOS/tvOS 15, macOS 12 and watchOS 9 minimums. Its calendar cache is synchronized
+and localized relative-date resources are included. Existing date APIs remain.
+
+Install `https://github.com/tomasszabo/SwiftMoment.git` from `master` after the
+Swift 6 migration PR merges (use `modernization/swift6` for review beforehand).
+Select the `SwiftMoment` product. Run `swift test` for the date regression suite.
 
 ## Installation
 
@@ -142,4 +148,3 @@ file for the full list! Thanks to all :)
 
 This project is distributed under a BSD license. See the LICENSE file
 for details.
-

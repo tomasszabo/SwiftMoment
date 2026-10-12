@@ -14,8 +14,9 @@ internal class MomentCache {
 		let tz: TimeZone
 		let locale: Locale
 		
-		var hashValue: Int {
-			return tz.hashValue ^ locale.hashValue
+		func hash(into hasher: inout Hasher) {
+			hasher.combine(tz)
+			hasher.combine(locale)
 		}
 		static func ==(lhs: Key, rhs: Key) -> Bool {
 			return lhs.tz == rhs.tz && lhs.locale == rhs.locale
@@ -23,25 +24,29 @@ internal class MomentCache {
 	}
 	
 	// our cache and the lock to access it
-	private static var calendarCache = [Key:Calendar]()
-	private static var lock = NSLock()
+    // This storage is accessed only while holding its immutable lock.
+    private final class Storage: @unchecked Sendable {
+        let lock = NSLock()
+        var calendars = [Key: Calendar]()
+    }
+    private static let storage = Storage()
 	
 	// create calendars on demand; in most cases, will return the same calendar
 	static func calendar(timeZone: TimeZone = defaultTimezone, locale: Locale = defaultLocale) -> Calendar {
-		lock.lock()
-		defer { lock.unlock() }
+		storage.lock.lock()
+		defer { storage.lock.unlock() }
 		let key = Key(tz: timeZone, locale: locale)
-		if let calendar = calendarCache[key] {
+		if let calendar = storage.calendars[key] {
 			return calendar
 		}
 		var calendar = Calendar.autoupdatingCurrent
 		calendar.timeZone = timeZone
 		calendar.locale = locale
-		calendarCache[key] = calendar
+		storage.calendars[key] = calendar
 		return calendar
 	}
 	
-	static var defaultCalendar : Calendar = { Calendar.autoupdatingCurrent }()
-	static var defaultLocale : Locale = { Locale.autoupdatingCurrent }()
-	static var defaultTimezone : TimeZone = { TimeZone.autoupdatingCurrent }()
+	static var defaultCalendar: Calendar { Calendar.autoupdatingCurrent }
+	static var defaultLocale: Locale { Locale.autoupdatingCurrent }
+	static var defaultTimezone: TimeZone { TimeZone.autoupdatingCurrent }
 }
