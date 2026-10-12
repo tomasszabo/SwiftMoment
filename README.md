@@ -30,7 +30,7 @@ SwiftMoment is compatible with
 your Podfile:
 
 ```ruby
-pod 'SwiftMoment'
+pod 'SwiftMoment', :git => 'https://github.com/tomasszabo/SwiftMoment.git', :branch => 'master'
 ```
 
 SwiftMoment can also be used via the [Swift Package Manager](https://swift.org/package-manager/). 
